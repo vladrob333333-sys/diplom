@@ -249,34 +249,36 @@ def admin_backup():
     if not (hasattr(current_user, 'role') and current_user.role == 'admin'):
         abort(403)
     if request.method == 'POST':
-        # Выгрузка всех таблиц в CSV
-        tables = ['employees', 'clients', 'services', 'client_services', 'tickets', 'reviews']
+        tables = {
+            'employees': Employee,
+            'clients': Client,
+            'services': Service,
+            'client_services': ClientService,
+            'tickets': Ticket,
+            'reviews': Review
+        }
         output = io.BytesIO()
         with zipfile.ZipFile(output, 'w') as zipf:
-            for table in tables:
-                # Получаем данные через SQLAlchemy
-                if table == 'employees':
-                    data = Employee.query.all()
-                elif table == 'clients':
-                    data = Client.query.all()
-                elif table == 'services':
-                    data = Service.query.all()
-                elif table == 'client_services':
-                    data = ClientService.query.all()
-                elif table == 'tickets':
-                    data = Ticket.query.all()
-                elif table == 'reviews':
-                    data = Review.query.all()
-                # Преобразуем в список словарей
-                rows = [{col.name: getattr(row, col.name) for col in row.__table__.columns} for row in data]
-                if rows:
-                    df = pd.DataFrame(rows)
-                    csv_data = df.to_csv(index=False)
+            for table_name, model in tables.items():
+                data = model.query.all()
+                if data:
+                    # Получаем имена колонок
+                    columns = [col.name for col in model.__table__.columns]
+                    csv_buffer = io.StringIO()
+                    writer = csv.writer(csv_buffer)
+                    writer.writerow(columns)
+                    for row in data:
+                        writer.writerow([getattr(row, col) for col in columns])
+                    zipf.writestr(f'{table_name}.csv', csv_buffer.getvalue().encode('utf-8'))
                 else:
-                    csv_data = ''
-                zipf.writestr(f'{table}.csv', csv_data)
+                    zipf.writestr(f'{table_name}.csv', b'')
         output.seek(0)
-        return send_file(output, download_name='backup.zip', as_attachment=True, mimetype='application/zip')
+        return send_file(
+            output,
+            download_name='backup.zip',
+            as_attachment=True,
+            mimetype='application/zip'
+        )
     return render_template('backup.html')
 
 # Оператор: дашборд
