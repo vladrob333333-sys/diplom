@@ -9,7 +9,7 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from werkzeug.security import generate_password_hash
 from sqlalchemy import func, and_, or_
-import pandas as pd
+
 
 from config import Config
 from models import db, Employee, Client, Service, ClientService, Ticket, Review
