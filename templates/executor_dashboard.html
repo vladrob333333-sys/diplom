@@ -43,10 +43,10 @@
                             <td>{{ ticket.id }}</td>
                             <td>{{ ticket.title }}</td>
                             <td>
-                                {% if ticket.status == 'assigned %}Назначена
-                                {% elif ticket.status == 'in_progress %}В работе
-                                {% elif ticket.status == 'completed %}Выполнена
-                                {% elif ticket.status == 'cancelled %}Отменена
+                                {% if ticket.status == 'assigned' %}Назначена
+                                {% elif ticket.status == 'in_progress' %}В работе
+                                {% elif ticket.status == 'completed' %}Выполнена
+                                {% elif ticket.status == 'cancelled' %}Отменена
                                 {% endif %}
                             </td>
                             <td>
