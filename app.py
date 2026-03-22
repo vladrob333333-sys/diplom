@@ -475,3 +475,58 @@ if __name__ == '__main__':
             db.session.add(admin)
             db.session.commit()
     app.run(debug=True)
+
+
+# Администратор: управление услугами
+@app.route('/admin/services')
+@login_required
+def admin_services():
+    if not (hasattr(current_user, 'role') and current_user.role == 'admin'):
+        abort(403)
+    services = Service.query.all()
+    return render_template('admin_services.html', services=services)
+
+@app.route('/admin/service/create', methods=['GET', 'POST'])
+@login_required
+def admin_create_service():
+    if not (hasattr(current_user, 'role') and current_user.role == 'admin'):
+        abort(403)
+    form = ServiceForm()
+    if form.validate_on_submit():
+        service = Service(
+            name=form.name.data,
+            description=form.description.data,
+            price=float(form.price.data)
+        )
+        db.session.add(service)
+        db.session.commit()
+        flash('Услуга добавлена', 'success')
+        return redirect(url_for('admin_services'))
+    return render_template('service_form.html', form=form, title='Добавить услугу')
+
+@app.route('/admin/service/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def admin_edit_service(id):
+    if not (hasattr(current_user, 'role') and current_user.role == 'admin'):
+        abort(403)
+    service = Service.query.get_or_404(id)
+    form = ServiceForm(obj=service)
+    if form.validate_on_submit():
+        service.name = form.name.data
+        service.description = form.description.data
+        service.price = float(form.price.data)
+        db.session.commit()
+        flash('Услуга обновлена', 'success')
+        return redirect(url_for('admin_services'))
+    return render_template('service_form.html', form=form, title='Редактировать услугу')
+
+@app.route('/admin/service/<int:id>/delete')
+@login_required
+def admin_delete_service(id):
+    if not (hasattr(current_user, 'role') and current_user.role == 'admin'):
+        abort(403)
+    service = Service.query.get_or_404(id)
+    db.session.delete(service)
+    db.session.commit()
+    flash('Услуга удалена', 'success')
+    return redirect(url_for('admin_services'))
