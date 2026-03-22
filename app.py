@@ -261,7 +261,6 @@ def admin_backup():
             for table_name, model in tables.items():
                 data = model.query.all()
                 if data:
-                    # Получаем имена колонок
                     columns = [col.name for col in model.__table__.columns]
                     csv_buffer = io.StringIO()
                     writer = csv.writer(csv_buffer)
@@ -272,12 +271,7 @@ def admin_backup():
                 else:
                     zipf.writestr(f'{table_name}.csv', b'')
         output.seek(0)
-        return send_file(
-            output,
-            download_name='backup.zip',
-            as_attachment=True,
-            mimetype='application/zip'
-        )
+        return send_file(output, download_name='backup.zip', as_attachment=True, mimetype='application/zip')
     return render_template('backup.html')
 
 # Оператор: дашборд
