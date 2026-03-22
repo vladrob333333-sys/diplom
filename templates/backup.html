@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Резервное копирование{% endblock %}
+{% block content %}
+<h1>Резервное копирование</h1>
+<p>Нажмите кнопку ниже, чтобы создать бэкап базы данных в формате ZIP (CSV-файлы всех таблиц).</p>
+<form method="POST">
+    <button type="submit" class="btn btn-primary">Создать бэкап</button>
+</form>
+{% endblock %}

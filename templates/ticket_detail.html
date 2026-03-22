@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Заявка #{{ ticket.id }}{% endblock %}
+{% block content %}
+<h1>Заявка #{{ ticket.id }}</h1>
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">{{ ticket.title }}</h5>
+        <p class="card-text">{{ ticket.description }}</p>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Статус:</strong> 
+                {% if ticket.status == 'new' %}Новая
+                {% elif ticket.status == 'assigned' %}Назначена
+                {% elif ticket.status == 'in_progress' %}В работе
+                {% elif ticket.status == 'completed' %}Выполнена
+                {% elif ticket.status == 'cancelled' %}Отменена
+                {% elif ticket.status == 'rejected' %}Отказ
+                {% endif %}
+            </li>
+            <li class="list-group-item"><strong>Приоритет:</strong> {{ ticket.priority }}</li>
+            <li class="list-group-item"><strong>Создана:</strong> {{ ticket.created_at.strftime('%d.%m.%Y %H:%M') }}</li>
+            <li class="list-group-item"><strong>Исполнитель:</strong> {{ ticket.executor.full_name if ticket.executor else 'Не назначен' }}</li>
+            {% if ticket.completed_at %}
+            <li class="list-group-item"><strong>Завершена:</strong> {{ ticket.completed_at.strftime('%d.%m.%Y %H:%M') }}</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+{% if ticket.status == 'completed' and not review %}
+    <div class="mt-4">
+        <h3>Оставить отзыв</h3>
+        <a href="{{ url_for('client_review', ticket_id=ticket.id) }}" class="btn btn-success">Написать отзыв</a>
+    </div>
+{% endif %}
+
+{% if review %}
+    <div class="mt-4">
+        <h3>Ваш отзыв</h3>
+        <div class="card">
+            <div class="card-body">
+                <p><strong>Оценка:</strong> {{ review.rating }} / 5</p>
+                <p><strong>Комментарий:</strong> {{ review.comment }}</p>
+                <p><small>Оставлен {{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</small></p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<a href="{{ url_for('client_dashboard') }}" class="btn btn-secondary mt-3">Назад</a>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Создание заявки{% endblock %}
+{% block content %}
+<h1>Создание заявки</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    {% if form.client_id is defined %}
+    <div class="mb-3">
+        {{ form.client_id.label(class="form-label") }}
+        {{ form.client_id(class="form-select") }}
+        {% for error in form.client_id.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="mb-3">
+        {{ form.title.label(class="form-label") }}
+        {{ form.title(class="form-control") }}
+        {% for error in form.title.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.description.label(class="form-label") }}
+        {{ form.description(class="form-control", rows=5) }}
+        {% for error in form.description.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <div class="mb-3">
+        {{ form.priority.label(class="form-label") }}
+        {{ form.priority(class="form-select") }}
+        {% for error in form.priority.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    <a href="{{ url_for('client_dashboard') if not current_user.role or current_user.role == 'client' else url_for('operator_dashboard') }}" class="btn btn-secondary">Отмена</a>
+</form>
+{% endblock %}

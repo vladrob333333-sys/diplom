@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<div class="jumbotron text-center py-5">
+    <h1 class="display-4">Инфокоммуникационные услуги</h1>
+    <p class="lead">Автоматизация распределения заявок и контроля выполнения</p>
+    <hr class="my-4">
+    <p>Для сотрудников компании и клиентов</p>
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+        <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Вход</a>
+        <a href="{{ url_for('client_register') }}" class="btn btn-outline-secondary btn-lg">Регистрация клиента</a>
+    </div>
+</div>
+{% endblock %}

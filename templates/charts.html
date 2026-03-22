@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Диаграммы заявок{% endblock %}
+{% block content %}
+<h1>Диаграммы заявок</h1>
+<form method="get" class="row g-3 mb-4">
+    <div class="col-auto">
+        <label for="executor_id" class="form-label">Исполнитель</label>
+        <select name="executor_id" id="executor_id" class="form-select">
+            <option value="">Все</option>
+            {% for e in executors %}
+                <option value="{{ e.id }}" {% if selected_executor == e.id %}selected{% endif %}>{{ e.full_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-auto">
+        <label for="start_date" class="form-label">С даты</label>
+        <input type="date" name="start_date" id="start_date" class="form-control" value="{{ start_date }}">
+    </div>
+    <div class="col-auto">
+        <label for="end_date" class="form-label">По дату</label>
+        <input type="date" name="end_date" id="end_date" class="form-control" value="{{ end_date }}">
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Показать</button>
+    </div>
+</form>
+
+<canvas id="statusChart" width="400" height="200"></canvas>
+<script>
+    const ctx = document.getElementById('statusChart').getContext('2d');
+    const statusChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Выполненные', 'Отмененные', 'Активные'],
+            datasets: [{
+                label: 'Количество заявок',
+                data: [{{ status_counts.completed }}, {{ status_counts.cancelled }}, {{ status_counts.active }}],
+                backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+            }]
+        }
+    });
+</script>
+{% endblock %}

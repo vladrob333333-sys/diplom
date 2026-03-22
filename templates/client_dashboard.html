@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Личный кабинет клиента{% endblock %}
+{% block content %}
+<h1>Мой кабинет</h1>
+<div class="row">
+    <div class="col-md-6">
+        <h2>Подключенные услуги</h2>
+        {% if services %}
+            <ul class="list-group">
+            {% for service in services %}
+                <li class="list-group-item">{{ service.name }} - {{ service.description }} ({{ service.price }} руб.)</li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p>У вас пока нет подключенных услуг.</p>
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h2>Мои заявки</h2>
+        <a href="{{ url_for('client_create_ticket') }}" class="btn btn-success mb-3">Создать новую заявку</a>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Заголовок</th>
+                        <th>Статус</th>
+                        <th>Приоритет</th>
+                        <th>Дата создания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.id }}</td>
+                        <td>{{ ticket.title }}</td>
+                        <td>
+                            {% if ticket.status == 'new' %}Новая
+                            {% elif ticket.status == 'assigned %}Назначена
+                            {% elif ticket.status == 'in_progress %}В работе
+                            {% elif ticket.status == 'completed %}Выполнена
+                            {% elif ticket.status == 'cancelled %}Отменена
+                            {% elif ticket.status == 'rejected %}Отказ
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ticket.priority == 'low' %}Низкий
+                            {% elif ticket.priority == 'medium' %}Средний
+                            {% elif ticket.priority == 'high' %}Высокий
+                            {% endif %}
+                        </td>
+                        <td>{{ ticket.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                        <td><a href="{{ url_for('client_ticket_detail', ticket_id=ticket.id) }}" class="btn btn-sm btn-info">Подробнее</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
