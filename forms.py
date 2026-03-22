@@ -61,3 +61,9 @@ class ReviewForm(FlaskForm):
     rating = SelectField('Оценка', choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')], validators=[DataRequired()], coerce=int)
     comment = TextAreaField('Комментарий', validators=[Optional()])
     submit = SubmitField('Отправить отзыв')
+
+class ServiceForm(FlaskForm):
+    name = StringField('Название услуги', validators=[DataRequired()])
+    description = TextAreaField('Описание')
+    price = StringField('Цена', validators=[DataRequired()])
+    submit = SubmitField('Сохранить')
