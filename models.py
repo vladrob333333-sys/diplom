@@ -44,6 +44,8 @@ class Client(UserMixin, db.Model):
     address = db.Column(db.String(200))
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    def get_id(self):
+        return f"cli_{self.id}"
 
     # Отношения
     tickets = db.relationship('Ticket', backref='client', lazy=True)
