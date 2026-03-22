@@ -1,5 +1,4 @@
 import zipfile
-import pandas as pd
 import os
 import csv
 import io
