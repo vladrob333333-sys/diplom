@@ -15,10 +15,21 @@ from config import Config
 from models import db, Employee, Client, Service, ClientService, Ticket, Review
 from forms import LoginForm, ClientRegistrationForm, EmployeeCreateForm, TicketForm, AssignTicketForm, ReviewForm
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
-
+# ... после всех импортов и определения app, db
+with app.app_context():
+    db.create_all()
+    # Создаём администратора, если его нет
+    if not Employee.query.filter_by(role='admin').first():
+        admin = Employee(username='admin', email='admin@example.com', role='admin', full_name='Administrator')
+        admin.set_password('admin')
+        db.session.add(admin)
+        db.session.commit()
+        print("Admin user created")
+        
 # Flask-Limiter для защиты от DDoS
 limiter = Limiter(
     app=app,
