@@ -16,7 +16,7 @@ class Employee(UserMixin, db.Model):
     full_name = db.Column(db.String(100))
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-        def get_id(self):
+    def get_id(self):
         return f"emp_{self.id}"
 
     # Отношения
