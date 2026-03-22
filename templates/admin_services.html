@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Управление услугами{% endblock %}
+{% block content %}
+<h1>Управление услугами</h1>
+<a href="{{ url_for('admin_create_service') }}" class="btn btn-primary mb-3">Добавить услугу</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Цена</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for service in services %}
+        <tr>
+            <td>{{ service.id }}</td>
+            <td>{{ service.name }}</td>
+            <td>{{ service.description }}</td>
+            <td>{{ service.price }}</td>
+            <td>
+                <a href="{{ url_for('admin_edit_service', id=service.id) }}" class="btn btn-sm btn-warning">Редактировать</a>
+                <a href="{{ url_for('admin_delete_service', id=service.id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Удалить услугу?')">Удалить</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
